@@ -1,6 +1,8 @@
 import pytest
-import create_workspace
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
+import create_workspace
 
 def test_get_or_create_workspace_existing(mocker):
     """Test that existing workspace is returned without creating a new one."""
@@ -32,10 +34,14 @@ def test_get_or_create_workspace_new(mocker):
 
     mocker.patch("create_workspace.get_ml_client", return_value=mock_client)
 
+    # 🔑 Patch Workspace class so it doesn't call Azure ML SDK constructor
+    mocker.patch("create_workspace.Workspace", return_value="mock-workspace-object")
+
     ws = create_workspace.get_or_create_workspace()
 
     assert ws.name == "new-ws"
     mock_client.workspaces.begin_create.assert_called_once()
+
 
 
 def test_delete_workspace(mocker):
