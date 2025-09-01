@@ -1,2 +1,4 @@
 azure-ai-ml
 azure-identity
+pytest
+pytest-mock
